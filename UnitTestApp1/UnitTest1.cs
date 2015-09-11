@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
-using SpaceStatus.Background;
+using SpaceStatusPoller;
 
 namespace UnitTestApp1
 {

@@ -112,9 +112,15 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\its-logo.png" />
+    <Content Include="Assets\its-logo_120x120.png" />
+    <Content Include="Assets\its-logo_170x170.png" />
+    <Content Include="Assets\its-logo_360x360.png" />
     <Content Include="Assets\Logo.scale-240.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
+    <Content Include="Assets\spaceStatusClosed_170x170.png" />
     <Content Include="Assets\spaceStatusClosed_500x500.jpg" />
+    <Content Include="Assets\spaceStatusOpen_170x170.png" />
     <Content Include="Assets\spaceStatusOpen_500x500.jpg" />
     <Content Include="Assets\SplashScreen.scale-240.png" />
     <Content Include="Assets\Square71x71Logo.scale-240.png" />

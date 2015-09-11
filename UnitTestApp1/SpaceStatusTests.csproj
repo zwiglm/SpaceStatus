@@ -91,13 +91,13 @@
     <Content Include="Assets\WideLogo.scale-240.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SpaceStatus\SpaceStatus.csproj">
-      <Project>{42883933-0175-4323-9121-75bd520f06db}</Project>
-      <Name>SpaceStatus</Name>
-    </ProjectReference>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+    <ProjectReference Include="..\SpaceStatusPoller\SpaceStatusPoller.csproj">
+      <Project>{f13b10b1-f6eb-4b1b-89ce-0c5591c87ff8}</Project>
+      <Name>SpaceStatusPoller</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>

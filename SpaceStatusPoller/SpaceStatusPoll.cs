@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
+using SpaceStatusPoller.Container;
 using Windows.ApplicationModel.Background;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
@@ -27,7 +29,8 @@ namespace SpaceStatusPoller
 
             BackgroundTaskDeferral deferral = taskInstance.GetDeferral();
             var response = await this.requestSpaceStatus();
-            eSpaceStatus status = this.filterMainLibs(response.Content.ToString());
+            SpaceStatus statusContainer = this.processStatusResponse(response.Content.ToString());
+            eSpaceStatus status = this.filterMainLibs(statusContainer);
             this.sendTileUpdateNotification(status);
             deferral.Complete();
         }
@@ -37,8 +40,41 @@ namespace SpaceStatusPoller
         }
 
 
+        private async Task<HttpResponseMessage> requestSpaceStatus()
+        {
+            Uri itSyndikatUri = new Uri("http://it-syndikat.org/status.php");
+            var HttpClientGetLibrary = new HttpClient();
+
+            HttpResponseMessage libsResponse = null;
+            try
+            {
+                libsResponse = await HttpClientGetLibrary.GetAsync(itSyndikatUri);
+                HttpClientGetLibrary.Dispose();
+            }
+            catch (Exception ex)
+            {
+            }
+            return libsResponse;
+        }
+
+        private SpaceStatus processStatusResponse(string httpResponse)
+        {
+            SpaceStatus container = JsonConvert.DeserializeObject<SpaceStatus>(httpResponse);
+            return container;
+        }
+
+        private eSpaceStatus filterMainLibs(SpaceStatus spaceStatus)
+        {
+            if (!spaceStatus.open)
+                return eSpaceStatus.Closed;
+            else if (spaceStatus.open)
+                return eSpaceStatus.Open;
+            else
+                return eSpaceStatus.Unknown;
+        }
+
         private void sendTileUpdateNotification(eSpaceStatus status)
-        {            
+        {
             string image = "";
             string altText = "";
             switch (status)
@@ -69,37 +105,6 @@ namespace SpaceStatusPoller
 
             var tileNotification = new TileNotification(tileXml);
             _tileUpdater.Update(tileNotification);
-        }
-
-        private async Task<HttpResponseMessage> requestSpaceStatus()
-        {
-            Uri itSyndikatUri = new Uri("http://it-syndikat.org/status-s.php");
-            var HttpClientGetLibrary = new HttpClient();
-
-            HttpResponseMessage libsResponse = null;
-            try
-            {
-                libsResponse = await HttpClientGetLibrary.GetAsync(itSyndikatUri);
-                HttpClientGetLibrary.Dispose();
-            }
-            catch (Exception ex)
-            {
-            }
-            return libsResponse;
-        }
-
-        private eSpaceStatus filterMainLibs(string httpResponse)
-        {
-            //HtmlDocument dom = new HtmlDocument();
-            //dom.LoadHtml(httpResponse);
-            //var inner = dom.GetElementbyId("itsstatus").InnerText;
-
-            if (httpResponse.Equals("false"))
-                return eSpaceStatus.Closed;
-            else if (httpResponse.Equals("true"))
-                return eSpaceStatus.Open;
-            else
-                return eSpaceStatus.Unknown;
         }
 
     }

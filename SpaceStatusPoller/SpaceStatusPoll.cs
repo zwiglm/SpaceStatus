@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SpaceStatusPoller.Container;
 using Windows.ApplicationModel.Background;
 using Windows.Data.Xml.Dom;
@@ -28,10 +29,18 @@ namespace SpaceStatusPoller
                 taskInstance.Canceled += taskInstance_Canceled;
 
             BackgroundTaskDeferral deferral = taskInstance.GetDeferral();
+
+            // what's the status
             var response = await this.requestSpaceStatus();
-            SpaceStatus statusContainer = this.processStatusResponse(response.Content.ToString());
+            var jObject = JObject.Parse(response.Content.ToString());
+            var jApi = jObject["api"];
+
+            // now we have all the info
+            SpaceStatus12 statusContainer = this.processStatusResponse(response.Content.ToString());
             eSpaceStatus status = this.filterMainLibs(statusContainer);
+            // update tile
             this.sendTileUpdateNotification(status);
+
             deferral.Complete();
         }
 
@@ -54,16 +63,20 @@ namespace SpaceStatusPoller
             catch (Exception ex)
             {
             }
+            finally
+            {
+                HttpClientGetLibrary.Dispose();
+            }
             return libsResponse;
         }
 
-        private SpaceStatus processStatusResponse(string httpResponse)
+        private SpaceStatus12 processStatusResponse(string httpResponse)
         {
-            SpaceStatus container = JsonConvert.DeserializeObject<SpaceStatus>(httpResponse);
+            SpaceStatus12 container = JsonConvert.DeserializeObject<SpaceStatus12>(httpResponse);
             return container;
         }
 
-        private eSpaceStatus filterMainLibs(SpaceStatus spaceStatus)
+        private eSpaceStatus filterMainLibs(SpaceStatus12 spaceStatus)
         {
             if (!spaceStatus.open)
                 return eSpaceStatus.Closed;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SpaceStatusPoller.Container
 {
-    public sealed class SpaceStatus
+    public sealed class SpaceStatus12
     {
         public string api { get; set; }
         public string space { get; set; }

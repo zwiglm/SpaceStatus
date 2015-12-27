@@ -81,7 +81,7 @@
   <ItemGroup>
     <Compile Include="Container\Contact.cs" />
     <Compile Include="Container\Icon.cs" />
-    <Compile Include="Container\SpaceStatus.cs" />
+    <Compile Include="Container\SpaceStatus12.cs" />
     <Compile Include="PollerGlobalVariables.cs" />
     <Compile Include="SpaceStatusPoll.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
